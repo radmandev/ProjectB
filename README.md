@@ -2,6 +2,10 @@
 
 A Node.js application that integrates Sendpulse messaging service with Bitrix24 Open Channels, enabling bidirectional message forwarding between the two platforms.
 
+## 🚀 Quick Start
+
+**New to this project?** Check out the [Quick Start Guide](QUICKSTART.md) to get up and running in 5 minutes!
+
 ## Overview
 
 This integration allows you to:
@@ -47,6 +51,14 @@ Sendpulse Chatbot  <-->  Integration Server  <-->  Bitrix24 Open Channel
 - Public server URL for receiving webhooks (use ngrok for local development)
 
 ## Installation
+
+**Quick Setup:** Run the interactive setup script:
+```bash
+npm install
+./setup.sh
+```
+
+Or follow the manual steps below:
 
 1. **Clone the repository**
 ```bash
