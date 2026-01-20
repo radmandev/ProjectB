@@ -6,8 +6,31 @@ const axios = require('axios');
  */
 class Bitrix24Service {
   constructor() {
-    this.webhookUrl = process.env.BITRIX24_WEBHOOK_URL;
+    // Support for separate webhook URLs or a single base URL
+    this.registerUrl = process.env.BITRIX24_REGISTER_URL;
+    this.sendMessagesUrl = process.env.BITRIX24_SEND_MESSAGES_URL;
+    this.crmLeadUrl = process.env.BITRIX24_CRM_LEAD_URL;
+    this.baseUrl = process.env.BITRIX24_BASE_URL || process.env.BITRIX24_WEBHOOK_URL;
     this.openLineId = process.env.BITRIX24_OPEN_LINE_ID;
+  }
+
+  /**
+   * Get the appropriate URL for a specific method
+   */
+  getUrl(method) {
+    // If specific URLs are configured, use them
+    if (method === 'imconnector.register' && this.registerUrl) {
+      return this.registerUrl;
+    }
+    if (method === 'imconnector.send.messages' && this.sendMessagesUrl) {
+      return this.sendMessagesUrl;
+    }
+    if (method === 'crm.lead.add' && this.crmLeadUrl) {
+      return this.crmLeadUrl;
+    }
+    
+    // Otherwise, construct URL from base URL
+    return `${this.baseUrl}${method}`;
   }
 
   /**
@@ -15,7 +38,7 @@ class Bitrix24Service {
    */
   async sendMessage(sessionId, message) {
     try {
-      const response = await axios.post(`${this.webhookUrl}imopenlines.message.add`, {
+      const response = await axios.post(this.getUrl('imopenlines.message.add'), {
         CHAT_ID: sessionId,
         MESSAGE: message
       });
@@ -32,7 +55,7 @@ class Bitrix24Service {
    */
   async registerSession(userId, userName) {
     try {
-      const response = await axios.post(`${this.webhookUrl}imopenlines.session.start`, {
+      const response = await axios.post(this.getUrl('imopenlines.session.start'), {
         USER: {
           ID: userId,
           NAME: userName
@@ -72,7 +95,7 @@ class Bitrix24Service {
       }
 
       // Send the message to the open channel
-      const response = await axios.post(`${this.webhookUrl}imconnector.send.messages`, {
+      const response = await axios.post(this.getUrl('imconnector.send.messages'), {
         CONNECTOR: 'sendpulse',
         LINE: this.openLineId,
         MESSAGES: [{
@@ -101,11 +124,35 @@ class Bitrix24Service {
   }
 
   /**
+   * Create a CRM lead from message
+   */
+  async createLead(userName, userPhone, userEmail, message) {
+    try {
+      const response = await axios.post(this.getUrl('crm.lead.add'), {
+        fields: {
+          TITLE: `New lead from ${userName}`,
+          NAME: userName,
+          PHONE: userPhone ? [{ VALUE: userPhone, VALUE_TYPE: 'WORK' }] : undefined,
+          EMAIL: userEmail ? [{ VALUE: userEmail, VALUE_TYPE: 'WORK' }] : undefined,
+          COMMENTS: message,
+          SOURCE_ID: 'WEB',
+          STATUS_ID: 'NEW'
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Error creating lead in Bitrix24:', error.response?.data || error.message);
+      throw error;
+    }
+  }
+
+  /**
    * Update connector status
    */
   async updateConnectorStatus(active = true) {
     try {
-      const response = await axios.post(`${this.webhookUrl}imconnector.status.set`, {
+      const response = await axios.post(this.getUrl('imconnector.status.set'), {
         CONNECTOR: 'sendpulse',
         LINE: this.openLineId,
         ACTIVE: active
@@ -123,7 +170,7 @@ class Bitrix24Service {
    */
   async registerConnector(handlerUrl) {
     try {
-      const response = await axios.post(`${this.webhookUrl}imconnector.register`, {
+      const response = await axios.post(this.getUrl('imconnector.register'), {
         CONNECTOR: 'sendpulse',
         LINE: this.openLineId,
         NAME: 'Sendpulse Integration',

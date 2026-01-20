@@ -40,6 +40,21 @@ class MessageController {
       // Get or create Bitrix24 session
       let bitrixSessionId = this.sessionMap.get(contact.id);
 
+      // Optionally create a CRM lead for new contacts
+      if (!bitrixSessionId && process.env.BITRIX24_CREATE_LEADS === 'true') {
+        try {
+          await this.bitrix24.createLead(
+            contact.name || `User ${contact.id}`,
+            contact.phone,
+            contact.email,
+            message.text
+          );
+          console.log('Created CRM lead for new contact');
+        } catch (error) {
+          console.error('Failed to create CRM lead, continuing with message:', error.message);
+        }
+      }
+
       // Forward message to Bitrix24
       const result = await this.bitrix24.receiveMessage(
         bitrixSessionId,
