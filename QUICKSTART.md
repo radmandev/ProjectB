@@ -41,6 +41,25 @@ Update these values:
 
 ## Step 3: Start the Server
 
+### For Local Testing with ngrok
+
+**Use the automated helper script:**
+
+```bash
+./start-local-testing.sh
+```
+
+This script will:
+- Check all prerequisites
+- Install ngrok if needed
+- Configure your environment
+- Start both the server and ngrok
+- Show you the webhook URL to use
+
+**Or see [NGROK_GUIDE.md](NGROK_GUIDE.md) for detailed manual setup.**
+
+### For Production
+
 ```bash
 npm start
 ```

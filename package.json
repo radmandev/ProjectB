@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "node examples/test-integration.js"
+    "test": "node examples/test-integration.js",
+    "test:ngrok": "node test-ngrok-setup.js"
   },
   "keywords": ["sendpulse", "bitrix24", "integration", "messaging"],
   "author": "",

@@ -48,7 +48,8 @@ Sendpulse Chatbot  <-->  Integration Server  <-->  Bitrix24 Open Channel
 - npm or yarn
 - Sendpulse account with API credentials
 - Bitrix24 account with webhook access
-- Public server URL for receiving webhooks (use ngrok for local development)
+- **For local testing:** ngrok ([installation guide](NGROK_GUIDE.md))
+- **For production:** Public server URL for receiving webhooks
 
 ## Installation
 
@@ -57,6 +58,12 @@ Sendpulse Chatbot  <-->  Integration Server  <-->  Bitrix24 Open Channel
 npm install
 ./setup.sh
 ```
+
+**For Local Testing:** Use the automated local testing helper:
+```bash
+./start-local-testing.sh
+```
+See [NGROK_GUIDE.md](NGROK_GUIDE.md) for detailed local testing instructions.
 
 Or follow the manual steps below:
 
