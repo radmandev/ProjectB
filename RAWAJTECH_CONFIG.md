@@ -2,6 +2,17 @@
 
 This document provides the specific configuration for your Rawajtech Bitrix24 instance.
 
+## Bitrix24 Open Line ID
+
+**Your Bitrix24 Open Line ID: `7`**
+
+Extracted from: `https://rawajtech.bitrix24.com/contact_center/connector/?ID=facebook&LINE=7&action-line=create`
+
+This has been configured in your `.env.example` as:
+```env
+BITRIX24_OPEN_LINE_ID=7
+```
+
 ## Bitrix24 Webhook URLs
 
 You have provided the following Bitrix24 REST API webhook URLs:
@@ -43,6 +54,8 @@ https://your-server-domain.com/webhook/sendpulse
    https://your-ngrok-id.ngrok.io/webhook/sendpulse
    ```
 
+**📖 For detailed Sendpulse webhook configuration, see [SENDPULSE_SETUP.md](SENDPULSE_SETUP.md)**
+
 ### For Production:
 
 Replace `your-server-domain.com` with your actual domain:
@@ -65,7 +78,7 @@ BITRIX24_REGISTER_URL=https://rawajtech.bitrix24.com/rest/1/vke55tpksfpzd9dk/imc
 BITRIX24_SEND_MESSAGES_URL=https://rawajtech.bitrix24.com/rest/1/0z46v7smtazqbv39/imconnector.send.messages.json
 BITRIX24_CRM_LEAD_URL=https://rawajtech.bitrix24.com/rest/1/9pgrdwxdwy3ol1sw/crm.lead.add.json
 BITRIX24_BASE_URL=https://rawajtech.bitrix24.com/rest/1/vke55tpksfpzd9dk/
-BITRIX24_OPEN_LINE_ID=your_open_line_id
+BITRIX24_OPEN_LINE_ID=7
 BITRIX24_CREATE_LEADS=false
 
 # Server Configuration
