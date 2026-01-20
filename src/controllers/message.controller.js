@@ -11,6 +11,12 @@ class MessageController {
     this.bitrix24 = new Bitrix24Service();
     // In-memory session mapping (in production, use Redis or database)
     this.sessionMap = new Map(); // Maps Sendpulse contact_id to Bitrix24 session_id
+    this.reverseSessionMap = new Map(); // Maps Bitrix24 session_id to Sendpulse contact_id
+    
+    // Warn if using in-memory storage in production
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('⚠️  WARNING: Using in-memory session storage in production. Consider using Redis or a database for persistent storage.');
+    }
   }
 
   /**
@@ -45,6 +51,7 @@ class MessageController {
       // Store session mapping if new
       if (result.result?.session?.id) {
         this.sessionMap.set(contact.id, result.result.session.id);
+        this.reverseSessionMap.set(result.result.session.id, contact.id);
       }
 
       console.log('Message forwarded to Bitrix24 successfully');
@@ -70,14 +77,8 @@ class MessageController {
       if (event === 'ONIMBOTMESSAGEADD' || event === 'OnImMessageAdd') {
         const { DIALOG_ID, MESSAGE, USER_ID } = data;
 
-        // Find Sendpulse contact ID from session mapping
-        let sendpulseContactId = null;
-        for (const [contactId, sessionId] of this.sessionMap.entries()) {
-          if (sessionId === DIALOG_ID) {
-            sendpulseContactId = contactId;
-            break;
-          }
-        }
+        // Find Sendpulse contact ID from reverse session mapping (O(1) lookup)
+        const sendpulseContactId = this.reverseSessionMap.get(DIALOG_ID);
 
         if (!sendpulseContactId) {
           console.warn('No Sendpulse contact found for Bitrix24 session:', DIALOG_ID);

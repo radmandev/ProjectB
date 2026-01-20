@@ -51,6 +51,17 @@ class Bitrix24Service {
    * Send incoming message from external source to Bitrix24
    */
   async receiveMessage(sessionId, userId, userName, message) {
+    // Validate required parameters
+    if (!userId || typeof userId !== 'string') {
+      throw new Error('userId is required and must be a string');
+    }
+    if (!userName || typeof userName !== 'string') {
+      throw new Error('userName is required and must be a string');
+    }
+    if (!message || typeof message !== 'string') {
+      throw new Error('message is required and must be a string');
+    }
+
     try {
       // First ensure session exists or create new one
       let chatId = sessionId;

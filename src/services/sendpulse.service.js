@@ -56,7 +56,11 @@ class SendpulseService {
 
       this.token = response.data.access_token;
       // Token typically expires in 1 hour, store expiry time
-      this.tokenExpiry = Date.now() + (response.data.expires_in * 1000) - 60000; // 1 min buffer
+      const expiresIn = response.data.expires_in || 3600; // Default to 1 hour if not provided
+      if (typeof expiresIn !== 'number' || expiresIn <= 0) {
+        throw new Error('Invalid token expiration time received from Sendpulse');
+      }
+      this.tokenExpiry = Date.now() + (expiresIn * 1000) - 60000; // 1 min buffer
 
       // Save token to file
       try {
