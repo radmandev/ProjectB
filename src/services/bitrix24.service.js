@@ -30,7 +30,9 @@ class Bitrix24Service {
     }
     
     // Otherwise, construct URL from base URL
-    return `${this.baseUrl}${method}`;
+    // Ensure proper URL separator
+    const base = this.baseUrl.endsWith('/') ? this.baseUrl : `${this.baseUrl}/`;
+    return `${base}${method}`;
   }
 
   /**
