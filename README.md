@@ -6,6 +6,8 @@ A Node.js application that integrates Sendpulse messaging service with Bitrix24 
 
 **New to this project?** Check out the [Quick Start Guide](QUICKSTART.md) to get up and running in 5 minutes!
 
+**Deploying to Hostinger?** See the [Hostinger Deployment Guide](HOSTINGER_DEPLOYMENT.md) for step-by-step instructions.
+
 ## Overview
 
 This integration allows you to:
@@ -283,18 +285,46 @@ The application logs all incoming webhooks and message forwarding activities. Mo
 
 ### Deployment Options
 
-- **Heroku**: Use the included `package.json` scripts
-- **Docker**: Create a Dockerfile for containerized deployment
-- **VPS**: Use PM2 for process management
-- **Serverless**: Adapt for AWS Lambda or Google Cloud Functions
+- **Hostinger**: Complete guide for Hostinger shared/VPS hosting → [HOSTINGER_DEPLOYMENT.md](HOSTINGER_DEPLOYMENT.md)
+- **Heroku**: Use the included `package.json` scripts → [DEPLOYMENT.md](DEPLOYMENT.md)
+- **Docker**: Create a Dockerfile for containerized deployment → [DEPLOYMENT.md](DEPLOYMENT.md)
+- **VPS**: Use PM2 for process management → [DEPLOYMENT.md](DEPLOYMENT.md)
+- **Cloud Platforms**: AWS, Google Cloud, Azure → [DEPLOYMENT.md](DEPLOYMENT.md)
+
+### Quick Hostinger Deployment
+
+```bash
+# 1. Upload files to Hostinger via FTP/SSH
+# 2. SSH into your server
+ssh username@your-domain.com
+
+# 3. Navigate to your domain directory
+cd domains/your-domain.com/public_html
+
+# 4. Install dependencies
+npm install --production
+
+# 5. Configure environment
+cp .env.example .env
+nano .env  # Add your credentials
+
+# 6. Start with PM2
+pm2 start ecosystem.config.js
+pm2 save
+pm2 startup
+```
+
+See [HOSTINGER_DEPLOYMENT.md](HOSTINGER_DEPLOYMENT.md) for complete instructions.
 
 ### Example PM2 Configuration
 
-```bash
-# Install PM2
-npm install -g pm2
+The project includes `ecosystem.config.js` for PM2:
 
-# Start application
+```bash
+# Start application using ecosystem file
+pm2 start ecosystem.config.js
+
+# Or manually
 pm2 start src/index.js --name sendpulse-bitrix24
 
 # Save configuration
